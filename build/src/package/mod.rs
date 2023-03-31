@@ -17,7 +17,7 @@ pub(crate) struct Package<S> {
     phantom_data: PhantomData<S>,
 }
 
-/// It is not guaranteed that the package was downloaded to teh exact version specified.
+/// It is not guaranteed that the package was downloaded to the exact version specified.
 #[derive(Debug, Clone)]
 pub struct Unknown {}
 

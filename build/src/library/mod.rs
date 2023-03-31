@@ -12,9 +12,9 @@ use crate::{
     package::{Package, PackageType},
 };
 
-mod cargo_toml;
+pub mod cargo_toml;
 mod icons_md;
-mod lib_rs;
+pub mod lib_rs;
 mod readme_md;
 mod src_dir;
 
@@ -26,6 +26,7 @@ pub(crate) struct Library {
     readme_md: Readme,
     icons_md: Icons,
     src_dir: SrcDir,
+    crates: Vec<Crate>,
 }
 
 impl Library {

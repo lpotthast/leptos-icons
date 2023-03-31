@@ -16,12 +16,7 @@ mod library;
 mod package;
 mod path;
 mod sem_ver;
-
-// Missing support for:
-// - Docs
-// - props passing
-// - optimizing svgs
-// - ssr optimizations?
+mod sub_crate;
 
 #[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]

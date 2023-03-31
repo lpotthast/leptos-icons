@@ -8,7 +8,6 @@ use super::lib_rs::LibRs;
 #[derive(Debug)]
 pub(crate) struct SrcDir {
     pub path: PathBuf,
-    pub lib_rs: LibRs,
 }
 
 impl SrcDir {
