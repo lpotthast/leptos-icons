@@ -57,7 +57,7 @@ impl Crate {
             error!(?err, "Could not create crate directory");
             err
         })?;
-        self.readme_md.init().await?;
+        self.readme_md.init(&self.package.meta).await?;
         self.icons_md.init().await?;
         self.src_dir.init().await?;
         self.cargo_toml.init(&self.package.meta).await?;

@@ -4,27 +4,22 @@ use std::path::PathBuf;
 use tokio::io::AsyncWriteExt;
 use tracing::{error, info, instrument};
 
-use crate::package::{GitTarget, Package, PackageSource};
+use crate::package::{GitTarget, Package, PackageMetadata, PackageSource};
 
-const BASE_README: &str = indoc::indoc!(
-    r#"
-    # Leptos-Icons
+fn base_readme(package_short_name: &str, package_name: &str) -> String {
+    indoc::formatdoc!(
+        r#"
+    # leptos-icons-{package_short_name}
 
-    Add icons from popular icon libraries into your leptos projects. Every icon is packaged as its own cargo feature to reduce build times.
+    Add icons from the {package_name} library into your leptos projects. Every icon is packaged as its own cargo feature to reduce build times.
 
-    - Please note that this crate is in very early developpement and may include [bugs](#contributing).
-    - This crate is **heavily** inspired by the [solidjs-icons](https://github.com/x64Bits/solid-icons) library.
-
-    ## Table of Contents
-
-    - [Leptos-Icons](#leptos-icons)
-      - [Table of Contents](#table-of-contents)
-      - [Usage](#usage)
-      - [Icon Packages](#icon-packages)
-      - [Contributing](#contributing)
+    - The ICONS.md file presents every available icon.
+    - visit the [leptos-icons](https://github.com/Carlosted/leptos-icons) repository to see every icon package available.
+    - Please note that this crate is in very early developpement and may include bugs.
 
 "#
-);
+    )
+}
 
 #[derive(Debug)]
 pub(crate) struct Readme {
@@ -58,11 +53,11 @@ impl Readme {
     }
 
     #[instrument(level = "info")]
-    pub async fn init(&self) -> Result<()> {
+    pub async fn init(&self, package_meta: &PackageMetadata) -> Result<()> {
         info!("Writing BASE_README content.");
         self.create_file()
             .await?
-            .write_all(BASE_README.as_bytes())
+            .write_all(base_readme(&package_meta.short_name, &package_meta.package_name).as_bytes())
             .await
             .map_err(Into::into)
     }
