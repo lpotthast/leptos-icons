@@ -14,6 +14,7 @@ const DOWNLOAD_DIR: &str = "downloads";
 pub(crate) struct Package<S> {
     pub ty: PackageType,
     pub meta: PackageMetadata,
+    pub icons: Vec<SvgIcon>,
     phantom_data: PhantomData<S>,
 }
 
@@ -24,6 +25,9 @@ pub struct Unknown {}
 /// The package was successfully downloaded. Icon data can be read.
 #[derive(Debug, Clone)]
 pub struct Downloaded {}
+
+#[derive(Debug, Clone)]
+pub struct Parsed {}
 
 impl<S> Package<S> {
     pub fn download_path(&self) -> PathBuf {
@@ -41,6 +45,7 @@ impl Package<Unknown> {
             .map(|ty| Package::<Unknown> {
                 ty,
                 meta: ty.metadata(),
+                icons: Vec::new(),
                 phantom_data: PhantomData {},
             })
             .collect()
@@ -83,6 +88,7 @@ impl Package<Unknown> {
         Ok(Package::<Downloaded> {
             ty: self.ty,
             meta: self.meta,
+            icons: Vec::new(),
             phantom_data: PhantomData {},
         })
     }
@@ -93,8 +99,19 @@ impl Package<Downloaded> {
         self.download_path().join(self.meta.svg_dir.as_ref())
     }
 
-    pub async fn read_icons(&self) -> Result<Vec<SvgIcon>> {
-        reader::read_icons(self).await
+    pub async fn read_icons(self) -> Result<Package<Parsed>> {
+        let mut icons = reader::read_icons(&self).await?;
+        let num_icons = icons.len();
+
+        info!(num_icons, "Sorting icons to avoid churn");
+        icons.sort_by(|a, b| a.feature.name.cmp(&b.feature.name));
+
+        Ok(Package {
+            ty: self.ty,
+            meta: self.meta,
+            icons,
+            phantom_data: PhantomData {},
+        })
     }
 }
 

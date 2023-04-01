@@ -67,6 +67,74 @@ impl Icons {
         ))
     }
 
+    pub(crate) async fn write_crate_icon_table(
+        &self,
+        icon_metadata: Vec<IconMetadata>,
+    ) -> Result<()> {
+        struct TableEntry {
+            name: String,
+            categories: String,
+        }
+        info!("Writing icon table.");
+
+        let mut file = self.append().await?;
+
+        let mut entries = Vec::new();
+        entries.push(TableEntry {
+            name: "Icon name".to_owned(),
+            categories: "Categories".to_owned(),
+        });
+        entries.push(TableEntry {
+            name: "---".to_owned(),
+            categories: "---".to_owned(),
+        });
+
+        for icon_meta in icon_metadata {
+            entries.push(TableEntry {
+                name: icon_meta.name,
+                categories: icon_meta
+                    .categories
+                    .into_iter()
+                    .map(|it| it.0)
+                    .collect::<Vec<_>>()
+                    .join(", "),
+            });
+        };
+
+
+        let longest_name = entries
+            .iter()
+            .fold(0, |acc, it| usize::max(acc, it.name.len()));
+        let longest_categories = entries
+            .iter()
+            .fold(0, |acc, it| usize::max(acc, it.categories.len()));
+
+        for entry in entries {
+            file.write_all("| ".as_bytes()).await?;
+            file.write_all(entry.name.as_bytes()).await?;
+            file.write_all(" ".repeat(longest_name - entry.name.len()).as_bytes())
+                .await?;
+
+            file.write_all(" | ".as_bytes()).await?;
+            file.write_all(entry.categories.as_bytes()).await?;
+            file.write_all(
+                " ".repeat(longest_categories - entry.categories.len())
+                    .as_bytes(),
+            )
+            .await?;
+
+            file.write_all(" |".as_bytes()).await?;
+            file.write_all("\n".as_bytes()).await?;
+        };
+
+        file.flush().await.map_err(|err| {
+            error!(?err, "Could not flush file after writing.");
+            err
+        })?;
+
+        Ok(())
+    }
+
     pub(crate) async fn write_icon_table(
         &self,
         package_icon_metadata: Vec<(PackageType, Vec<IconMetadata>)>,

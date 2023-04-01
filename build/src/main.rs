@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use anyhow::Result;
 use clap::{command, Parser};
 use tracing::info;
@@ -37,7 +39,8 @@ async fn main() -> Result<()> {
 
     let start = time::OffsetDateTime::now_utc();
 
-    let lib = Library::new(path::leptos_icons_crate(""));
+    // let lib = Library::new(path::leptos_icons_crate(""));
+    let lib = Library::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")));
     lib.generate(args.clean).await?;
 
     let end = time::OffsetDateTime::now_utc();
