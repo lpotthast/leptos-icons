@@ -39,8 +39,7 @@ async fn main() -> Result<()> {
 
     let start = time::OffsetDateTime::now_utc();
 
-    // let lib = Library::new(path::leptos_icons_crate(""));
-    let lib = Library::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")));
+    let lib = Library::new(path::leptos_icons_crate(""));
     lib.generate(args.clean).await?;
 
     let end = time::OffsetDateTime::now_utc();

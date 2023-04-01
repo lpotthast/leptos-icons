@@ -22,7 +22,7 @@ pub(crate) struct Crate {
 
 impl Crate {
     pub fn new(src_path: &Path, package: Package<Parsed>) -> Self {
-        let path = src_path.join(format!("leptos_icons_{}", package.meta.short_name));
+        let path = src_path.join(format!("leptos-icons-{}", package.meta.short_name));
         let src_dir = SrcDir {
             path: path.join("src"),
             lib_rs: LibRs {
@@ -59,8 +59,8 @@ impl Crate {
         })?;
         self.readme_md.init().await?;
         self.icons_md.init().await?;
-        self.src_dir.reset().await?;
-        self.cargo_toml.init().await?;
+        self.src_dir.init().await?;
+        self.cargo_toml.init(&self.package.meta).await?;
 
         Ok(())
     }

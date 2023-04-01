@@ -13,10 +13,7 @@ pub(crate) struct SrcDir {
 
 impl SrcDir {
     /// Removes everything inside and creates a fresh lib.rs file.
-    pub async fn reset(&mut self) -> Result<()> {
-        info!(path = ?self.path, "Removing existing src directory");
-        // tokio::fs::remove_dir_all(&self.path).await?;
-
+    pub async fn init(&mut self) -> Result<()> {
         info!(path = ?self.path, "Creating new src directory");
         tokio::fs::create_dir(&self.path).await?;
 

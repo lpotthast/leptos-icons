@@ -23,7 +23,7 @@ impl Library {
         Self { path: root.clone() }
     }
 
-    pub async fn generate(mut self, clean: bool) -> Result<()> {
+    pub async fn generate(self, clean: bool) -> Result<()> {
         let all_crates = Arc::new(RwLock::new(Vec::<Crate>::new()));
 
         info!("Downloading icon packages");
