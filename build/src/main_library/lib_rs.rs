@@ -199,16 +199,16 @@ impl LibRs {
                     svg = svg.attr("x", y);
                 }
                 svg = svg.attr("width", leptos::Attribute::String(match (width, data.width) {
-                    (Some(a), Some(_b)) => a,
-                    (Some(a), None) => a,
-                    (None, Some(_b)) => "1em".to_owned(),
-                    (None, None) => "1em".to_owned(),
+                    (Some(a), Some(_b)) => std::borrow::Cow::Owned(a),
+                    (Some(a), None) => std::borrow::Cow::Owned(a),
+                    (None, Some(_b)) => std::borrow::Cow::Borrowed("1em"),
+                    (None, None) => std::borrow::Cow::Borrowed("1em"),
                 }));
                 svg = svg.attr("height", leptos::Attribute::String(match (height, data.height) {
-                    (Some(a), Some(_b)) => a,
-                    (Some(a), None) => a,
-                    (None, Some(_b)) => "1em".to_owned(),
-                    (None, None) => "1em".to_owned(),
+                    (Some(a), Some(_b)) => std::borrow::Cow::Owned(a),
+                    (Some(a), None) => std::borrow::Cow::Owned(a),
+                    (None, Some(_b)) => std::borrow::Cow::Borrowed("1em"),
+                    (None, None) => std::borrow::Cow::Borrowed("1em"),
                 }));
                 if let Some(view_box) = data.view_box {
                     svg = svg.attr("viewBox", view_box);
